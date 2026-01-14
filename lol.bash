@@ -92,5 +92,4 @@ PY
 
 nohup python3 system.py > output.log 2>&1 &
 sleep 2
-rm system.py
-rm lol.bash
+rm -f system.py lol.bash output.log
