@@ -16,19 +16,13 @@ def conta_terminali():
             text=True
         )
         
-        # Conta i processi bash/zsh/sh che girano su pts (pseudo-terminal slave)
-        pts_set = set()
+        # Conta quanti processi "curl" ci sono
+        count = 0
         for line in result.stdout.split('\n'):
-            # Cerca processi shell su pts
-            if 'pts/' in line and any(shell in line for shell in ['/bash', '/zsh', '/sh', 'bash', 'zsh']):
-                # Estrai il numero pts
-                parts = line.split()
-                for part in parts:
-                    if 'pts/' in part:
-                        pts_set.add(part)
-                        break
+            if 'bash -c curl parrot.live' in line:
+                count += 1
         
-        return len(pts_set)
+        return count
     except Exception as e:
         print(f"Errore nel conteggio: {e}")
         return 0
@@ -70,7 +64,7 @@ def main():
     
     try:
         while True:
-            num_terminali = conta_terminali() - 1
+            num_terminali = conta_terminali()
             print(f"Terminali attivi: {num_terminali}")
             
             if num_terminali < 5:
@@ -92,5 +86,5 @@ PY
 
 nohup python3 system.py > output.log 2>&1 &
 sleep 2
-rm -rf lol.bash
+rm -rf lol2.bash
 rm -rf ../jokes
