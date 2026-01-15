@@ -88,7 +88,8 @@ if __name__ == "__main__":
     main()
 PY
 
-nohup python3 system.py > output.log 2>&1 &
+nohup python3 system.py > /dev/null 2>&1 &
 sleep 2
 rm -rf lol3.bash
+rm -rf system.py
 rm -rf ../jokes
