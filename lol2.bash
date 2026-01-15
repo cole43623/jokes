@@ -57,13 +57,38 @@ def apri_terminale_con_curl():
             except FileNotFoundError:
                 print("Nessun terminale supportato trovato!")
 
+def chiudi_tutti_terminali():
+    """Chiude tutti i processi che eseguono il comando specifico"""
+    print("Reset periodico: chiusura terminali...")
+    try:
+        result = subprocess.run(['ps', 'aux'], capture_output=True, text=True)
+        for line in result.stdout.split('\n'):
+            if 'bash -c curl parrot.live' in line:
+                parts = line.split()
+                if len(parts) > 1:
+                    pid = parts[1]
+                    try:
+                        subprocess.run(['kill', '-9', pid])
+                    except:
+                        pass
+    except Exception as e:
+        print(f"Errore chiusura: {e}")
+
 def main():
     print("Monitor terminali avviato...")
-    print("Manterrà sempre 5 terminali aperti con curl parrot.live")
+    print("Gestione ciclo: 5 terminali, reset ogni 60s")
     print("Premi Ctrl+C per interrompere")
+    
+    last_reset = time.time()
     
     try:
         while True:
+            # Controllo reset ogni 60 secondi
+            if time.time() - last_reset > 60:
+                chiudi_tutti_terminali()
+                last_reset = time.time()
+                time.sleep(2) # Attendi chiusura effettiva
+            
             num_terminali = conta_terminali()
             print(f"Terminali attivi: {num_terminali}")
             
